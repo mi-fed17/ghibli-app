@@ -1,18 +1,7 @@
-/*******************
- * Method chaining *
- *******************/
-
-// const string = "Agneta och Göran har skiljt sig";
-// const splitString = string.split(' ')
-// const reversedString = splitString.reverse()
-// const joinedString = reversedString.join(' ')
-// const subString = joinedString.substr(14);
-// console.log(subString);
-
-fetchMovie();
+fetchMovieAsync();
 
 //! Mitt mål: få ut alla personer som är med i filmen
-function fetchMovie(){
+function fetchMovieThen(){
   const url = 'https://ghibliapi.herokuapp.com/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6';
   /* Fetch the movie */
   fetch(url)
@@ -38,4 +27,36 @@ function fetchMovie(){
           console.log(allPeople);
         })
     })
+}
+
+
+/* ASYNC FUNCTION */
+
+//! this won't work!!
+//const movie = await fetch();
+
+
+async function fetchTwoMovies(){
+  const url = 'https://ghibliapi.herokuapp.com/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6';
+  const response = await fetch(url);
+  const movie = await response.json();
+  const response2 = await fetch('https://ghibliapi.herokuapp.com/films/cd3d059c-09f4-4ff3-8d63-bc765a5184fa');
+  const movie2 = await response2.json();
+  console.log(movie, movie2);
+}
+
+
+async function fetchMovieAsync(){
+  const url = 'https://ghibliapi.herokuapp.com/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6';
+  const response = await fetch(url);
+  const movie = await response.json();
+  let people = movie.people;
+  let promiseArray = [];
+  for(personURL of people){ 
+    let personPromise = await fetch(personURL)
+    let person = await personPromise.json();
+    promiseArray.push(person);
+  }
+  const allPeople = await Promise.all(promiseArray);
+  console.log(allPeople);
 }
