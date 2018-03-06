@@ -11,13 +11,19 @@
 
 fetchMovie();
 
+//! Mitt mål: få ut alla personer som är med i filmen
 function fetchMovie(){
   const url = 'https://ghibliapi.herokuapp.com/films/0440483e-ca0e-4120-8c50-4c8cd9b965d6';
   fetch(url)
-    .then(function(response) {
-      return response.json();
-    })
-    .then(function(data){
-      console.log(data);
+    .then((response) => response.json())
+    .then((movie) => {
+      let people = movie.people;
+      for(personURL of people){
+        fetch(personURL)
+          .then((response) => response.json())
+          .then((person) => {
+            console.log(person);
+          })
+      }
     })
 }
